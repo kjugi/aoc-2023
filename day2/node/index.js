@@ -51,7 +51,7 @@ function main() {
             }
         }, {})
 
-    console.log(gamesObject)
+    // console.log(gamesObject)
 
     const possibleGames = Object.entries(gamesObject).filter(([_, games]) => {
         const isRedValid = games.every(game => game.red <= RED_CUBES_MAX);
@@ -68,6 +68,57 @@ function main() {
     console.log('--- Day 2: Cube Conundrum ---')
     console.log('What is the sum of the IDs of those games?')
     console.log(gamesIdsSum)
+
+    const gamesObjectWithMaxColorValue = lines.reduce((acc, line) => {
+        const [gameId, values] = line.split(': ');
+        const [_slug, id] = gameId.split(' ');
+
+        const games = values.split('; ');
+        const colorsObject = {
+            blue: 0,
+            green: 0,
+            red: 0,
+        }
+
+        games.forEach(game => {
+            const colorValues = game.split(', ')
+
+            colorValues.forEach(singleColor => {
+                const [value, colorName] = singleColor.split(' ');
+
+                if (Number(value) > colorsObject[colorName]) {
+                    colorsObject[colorName] = Number(value);
+                }
+            });
+        });
+
+        return {
+            ...acc,
+            [id]: colorsObject
+        }
+    }, {});
+
+    // console.log(gamesObjectWithMaxColorValue)
+
+    const gamesMultiplied = Object.entries(gamesObjectWithMaxColorValue).reduce((acc, [id, colors]) => {
+        const red = colors.red;
+        const green = colors.green;
+        const blue = colors.blue;
+
+        // Possible edge case - avoid multiplying by 0
+        return {
+            ...acc,
+            [id]: red * green * blue
+        }
+    }, {});
+
+    // console.log(gamesMultiplied);
+
+    const gamesSum = Object.values(gamesMultiplied).reduce((acc, value) => acc + value, 0);
+
+    console.log('--- Part Two ---')
+    console.log('What is the sum of the power of these sets?')
+    console.log(gamesSum)
 }
 
 main()
