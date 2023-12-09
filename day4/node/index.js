@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
 function main() {
-    // const fileContent = readFileSync('../input.txt')
-    const fileContent = readFileSync('../demo-input.txt')
+    const fileContent = readFileSync('../input.txt')
+    // const fileContent = readFileSync('../demo-input.txt')
     const lines = fileContent
         .toString()
         .split('\n')
@@ -17,6 +17,7 @@ function main() {
         return {
             winningNumbers: winningNumbers.split(' ').filter(n => n !== '').map(n => Number(n)),
             yourNumbers: yourNumbers.split(' ').filter(n => n !== '').map(n => Number(n)),
+            score: 1
         }
     })
 
@@ -42,6 +43,26 @@ function main() {
     console.log('--- Day 4: Scratchcards --- part 1');
     console.log('How many points are they worth in total?')
     console.log(totalPoints)
+
+    // part2
+
+    const cardScoresTotal = cardNumbers.map((card, index) => {
+        const { winningNumbers, yourNumbers } = card;
+
+        const matchedNumberCount = winningNumbers.filter(n => yourNumbers.includes(n)).length;
+
+        for (let y = 0; y < card.score; y++) {
+            for (let i = 1; i <= matchedNumberCount; i++) {
+                cardNumbers[index + i].score += 1;
+            }
+        }
+
+        return card.score
+    }).reduce((acc, score) => acc + score, 0);
+
+    console.log('--- Day 4: Scratchcards --- part 2');
+    console.log('how many total scratchcards do you end up with?')
+    console.log(cardScoresTotal)
 }
 
 main()
