@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
 function main() {
-    // const fileContent = readFileSync('../input.txt')
-    const fileContent = readFileSync('../demo-input.txt')
+    const fileContent = readFileSync('../input.txt')
+    // const fileContent = readFileSync('../demo-input.txt')
     const lines = fileContent
         .toString()
         .split('\n\n')
@@ -27,35 +27,29 @@ function main() {
 
     // console.log(dataPerMap);
 
-    const unrolledData = Object.entries(dataPerMap).reduce((acc, [key, values]) => {
-        let lineUnrolledData = {}
-
-        values.forEach((value) => {
-            const [numberA, numberB, mapLength] = value.split(' ');
-
-            const outputData = mapDataToGivenObject(+numberA, +numberB, +mapLength, lineUnrolledData);
-
-            lineUnrolledData = {
-                ...outputData
-            };
-        });
-
-        return {
-            ...acc,
-            [key]: lineUnrolledData
-        }
-    }, {});
-
-    // console.log(unrolledData);
-
-    const seedsResolved = seedsArray.reduce((acc, seed) => {
+    const findDataRange = seedsArray.reduce((acc, seed) => {
         let defaultValue = seed;
         const mappedValues = [];
 
-        Object.values(unrolledData).forEach((data) => {
-            if (isDataMapped(defaultValue, data)) {
-                mappedValues.push(Number(data[defaultValue]));
-                defaultValue = data[defaultValue];
+        Object.values(dataPerMap).forEach((dataArray) => {
+            const matchedArray = dataArray.find((data) => {
+                const [_, numberB, mapLength] = data.split(' ');
+
+                if (Number(defaultValue) <= Number(numberB) + Number(mapLength) &&
+                    Number(defaultValue) >= Number(numberB)) {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if (matchedArray) {
+                const [numberA, numberB, _] = matchedArray.split(' ');
+                const positionInChain = Number(defaultValue) - Number(numberB);
+                const properSearchedValue = Number(numberA) + (positionInChain < 0 ? positionInChain * -1 : positionInChain);
+
+                mappedValues.push(properSearchedValue)
+                defaultValue = properSearchedValue;
             } else {
                 mappedValues.push(Number(defaultValue));
             }
@@ -67,9 +61,9 @@ function main() {
         }
     }, {});
 
-    console.log(seedsResolved);
+    // console.log(findDataRange);
 
-    const lowestLocationNumber = Object.values(seedsResolved)
+    const lowestLocationNumber = Object.values(findDataRange)
         .map(mappedValues => mappedValues.at(-1))
         .sort((a, b) => a - b)[0];
 
@@ -77,24 +71,6 @@ function main() {
     console.log('--- Part One ---')
     console.log('What is the lowest location number that corresponds to any of the initial seed numbers?')
     console.log(lowestLocationNumber);
-}
-
-function mapDataToGivenObject(numberA, numberB, mapLength, inputData) {
-    const outputData = {
-        ...inputData
-    }
-
-    for (let i = 0; i < mapLength; i++) {
-        if (!isDataMapped(numberB + i, outputData)) {
-            outputData[numberB + i] = numberA + i;
-        }
-    }
-
-    return outputData;
-}
-
-function isDataMapped(numberA, object) {
-    return object[numberA] !== undefined;
 }
 
 main()
