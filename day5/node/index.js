@@ -71,6 +71,60 @@ function main() {
     console.log('--- Part One ---')
     console.log('What is the lowest location number that corresponds to any of the initial seed numbers?')
     console.log(lowestLocationNumber);
+
+    // Part Two
+
+    let lowestLocationNumberPartTwo = null;
+    const filteredDataPerMap = Object.values(dataPerMap).map(dataArray => {
+        return dataArray
+            .filter(data => {
+                const [first, second, _rangeLength] = data.split(' ')[0];
+
+                return Number(first) < Number(second)
+            })
+    })
+
+    // console.log(filteredDataPerMap);
+
+    for (let i = 0, seedArrayLength = seedsArray.length; i < seedArrayLength; i += 2) {
+        const seed = seedsArray[i];
+        const seedRange = seedsArray[i + 1];
+
+        for (let y = 0; y < seedRange; y++) {
+            let defaultValue = Number(seed) + y;
+
+            for (let x = 0, dataPerMapRange = filteredDataPerMap.length; x < dataPerMapRange; x++) {
+                const matchedArray = filteredDataPerMap[x].find((data) => {
+                    const [_, numberB, mapLength] = data.split(' ');
+
+                    if (Number(defaultValue) <= Number(numberB) + Number(mapLength) &&
+                        Number(defaultValue) >= Number(numberB)) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if (matchedArray) {
+                    const [numberA, numberB, _] = matchedArray.split(' ');
+                    const positionInChain = Number(defaultValue) - Number(numberB);
+                    const properSearchedValue = Number(numberA) + (positionInChain < 0 ? positionInChain * -1 : positionInChain);
+
+                    defaultValue = properSearchedValue;
+                }
+
+                if (x === dataPerMapRange - 1) {
+                    if (lowestLocationNumberPartTwo === null || lowestLocationNumberPartTwo > defaultValue) {
+                        lowestLocationNumberPartTwo = defaultValue;
+                    }
+                }
+            }
+        }
+    }
+
+    console.log('--- Part Two ---')
+    console.log('What is the lowest location number that corresponds to any of the initial seed numbers?')
+    console.log(lowestLocationNumberPartTwo);
 }
 
 main()
