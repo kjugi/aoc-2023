@@ -60,7 +60,7 @@ function main() {
                 tempNumber += char;
             }
 
-            if (Number.isNaN(Number(char)) && char === '.' && tempNumber !== '') {
+            if (Number.isNaN(Number(char)) && char === '.' && tempNumber !== '' || index === lineValues.length - 1) {
                 foundNumbers.push({
                     number: tempNumber,
                     x: index - tempNumber.length, // start index of the number
