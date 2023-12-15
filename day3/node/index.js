@@ -56,14 +56,25 @@ function main() {
         let tempNumber = '';
 
         lineValues.split('').forEach((char, index) => {
-            if (!Number.isNaN(Number(char)) && char !== '.') {
+            if (!Number.isNaN(Number(char))) {
                 tempNumber += char;
             }
 
-            if (Number.isNaN(Number(char)) && char === '.' && tempNumber !== '' || index === lineValues.length - 1) {
+            if (Number.isNaN(Number(char)) && tempNumber !== '') {
                 foundNumbers.push({
                     number: tempNumber,
-                    x: index - tempNumber.length, // start index of the number
+                    // start index of the number
+                    // index is on "." or symbol now, no need to -1
+                    x: index - tempNumber.length,
+                    y: lineNumber
+                })
+                tempNumber = '';
+            } else if (index === lineValues.length - 1 && tempNumber !== '') {
+                foundNumbers.push({
+                    number: tempNumber,
+                    // start index of the number
+                    // index is on last char so it's accurate, -1 is required
+                    x: index - (tempNumber.length - 1),
                     y: lineNumber
                 })
                 tempNumber = '';
@@ -125,7 +136,7 @@ function main() {
                     return (number.x + numberX) === coordinates.x && number.y === coordinates.y
                 })
 
-                if (isNumberValid && !foundNumbers[index]?.included) {
+                if (isNumberValid && !number?.included) {
                     foundNumbers[index].included = true;
                     return true;
                 }
@@ -139,7 +150,25 @@ function main() {
         })
     })
 
-    console.log(validNumbers);
+    // second approach
+    // foundNumbers.forEach((number) => {
+    //     const isNumberValid = Array.from(number.number).some((_, index) => {
+    //         return possibleSymbols.includes(lines[number.y].split('')[number.x + 1 + index]) ||
+    //             possibleSymbols.includes(lines[number.y].split('')[number.x - 1 + index]) ||
+    //             possibleSymbols.includes(lines[number.y + 1]?.split('')[number.x + index]) ||
+    //             possibleSymbols.includes(lines[number.y - 1]?.split('')[number.x + index]) ||
+    //             possibleSymbols.includes(lines[number.y + 1]?.split('')[number.x + 1 + index]) ||
+    //             possibleSymbols.includes(lines[number.y + 1]?.split('')[number.x - 1 + index]) ||
+    //             possibleSymbols.includes(lines[number.y - 1]?.split('')[number.x + 1 + index]) ||
+    //             possibleSymbols.includes(lines[number.y - 1]?.split('')[number.x - 1 + index])
+    //     })
+
+    //     if (isNumberValid) {
+    //         validNumbers.push(number.number);
+    //     }
+    // });
+
+    // console.log(validNumbers);
 
     const sum = validNumbers.reduce((acc, curr) => acc + Number(curr), 0);
 
