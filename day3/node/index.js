@@ -87,48 +87,7 @@ function main() {
     const validNumbers = [];
 
     foundSymbols.forEach((symbol) => {
-        const leftCoordinates = {
-            x: symbol.x - 1,
-            y: symbol.y
-        }
-        const rightCoordinates = {
-            x: symbol.x + 1,
-            y: symbol.y
-        }
-        const topCoordinates = {
-            x: symbol.x,
-            y: symbol.y - 1
-        }
-        const bottomCoordinates = {
-            x: symbol.x,
-            y: symbol.y + 1
-        }
-        const topLeftCoordinates = {
-            x: symbol.x - 1,
-            y: symbol.y - 1
-        }
-        const topRightCoordinates = {
-            x: symbol.x + 1,
-            y: symbol.y - 1
-        }
-        const bottomLeftCoordinates = {
-            x: symbol.x - 1,
-            y: symbol.y + 1
-        }
-        const bottomRightCoordinates = {
-            x: symbol.x + 1,
-            y: symbol.y + 1
-        }
-        const placesToValidate = [
-            leftCoordinates,
-            rightCoordinates,
-            topCoordinates,
-            bottomCoordinates,
-            topLeftCoordinates,
-            topRightCoordinates,
-            bottomLeftCoordinates,
-            bottomRightCoordinates
-        ];
+        const placesToValidate = getSymbolPlacesToCheck(symbol);
 
         placesToValidate.forEach((coordinates) => {
             const foundNumber = foundNumbers.find((number, index) => {
@@ -176,6 +135,94 @@ function main() {
     console.log('What is the sum of all of the part numbers in the engine schematic?')
     console.log('Answer: ')
     console.log(sum)
+
+    // Part 2
+
+    const starSymbols = foundSymbols.filter(symbol => symbol.symbol === '*');
+
+    // console.log(starSymbols);
+
+    const foundGearNumbers = [];
+
+    foundNumbers.forEach((number) => {
+        number.included = false;
+    });
+
+    starSymbols.forEach((symbol) => {
+        const placesToValidate = getSymbolPlacesToCheck(symbol);
+        const filteredNumbers = [];
+
+        placesToValidate.forEach((coordinates) => {
+            filteredNumbers.push(...foundNumbers.filter((number, index) => {
+                const isNumberValid = Array.from(number.number).some((_, numberX) => {
+                    return (number.x + numberX) === coordinates.x && number.y === coordinates.y
+                })
+
+                if (isNumberValid && !number?.included) {
+                    foundNumbers[index].included = true;
+                    return true;
+                }
+
+                return false;
+            }))
+        })
+
+        if (filteredNumbers.length === 2) {
+            foundGearNumbers.push(Number(filteredNumbers[0].number) * Number(filteredNumbers[1].number));
+        }
+    });
+
+    const gearSum = foundGearNumbers.reduce((acc, curr) => acc + Number(curr), 0);
+
+    console.log('--- Day 3: Gear Ratios --- - Part 2:')
+    console.log('What is the sum of all of the gear ratios in your engine schematic?')
+    console.log('Answer:')
+    console.log(gearSum)
+}
+
+function getSymbolPlacesToCheck(symbol) {
+    const leftCoordinates = {
+        x: symbol.x - 1,
+        y: symbol.y
+    }
+    const rightCoordinates = {
+        x: symbol.x + 1,
+        y: symbol.y
+    }
+    const topCoordinates = {
+        x: symbol.x,
+        y: symbol.y - 1
+    }
+    const bottomCoordinates = {
+        x: symbol.x,
+        y: symbol.y + 1
+    }
+    const topLeftCoordinates = {
+        x: symbol.x - 1,
+        y: symbol.y - 1
+    }
+    const topRightCoordinates = {
+        x: symbol.x + 1,
+        y: symbol.y - 1
+    }
+    const bottomLeftCoordinates = {
+        x: symbol.x - 1,
+        y: symbol.y + 1
+    }
+    const bottomRightCoordinates = {
+        x: symbol.x + 1,
+        y: symbol.y + 1
+    }
+    return [
+        leftCoordinates,
+        rightCoordinates,
+        topCoordinates,
+        bottomCoordinates,
+        topLeftCoordinates,
+        topRightCoordinates,
+        bottomLeftCoordinates,
+        bottomRightCoordinates
+    ];
 }
 
 main()
