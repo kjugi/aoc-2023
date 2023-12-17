@@ -66,6 +66,41 @@ function main() {
   console.log(numberOfWaysMultiplied);
 
   // part2
+
+  const singleTimeValue = Number(
+    timeValues
+      .split(" ")
+      .filter((v) => v !== "")
+      .join("")
+  );
+  const singleDistanceValue = Number(
+    distanceValues
+      .split(" ")
+      .filter((v) => v !== "")
+      .join("")
+  );
+
+  // console.log(singleTimeValue);
+  // console.log(singleDistanceValue);
+
+  let amountOfTimesToBeat = 0;
+
+  for (let i = 0; i < singleTimeValue; i++) {
+    const remainingTime = singleTimeValue - i;
+    const speed = SPEED_INCREASE_PER_MILLISECOND * i;
+    const distance = speed * remainingTime;
+
+    if (distance > singleDistanceValue) {
+      amountOfTimesToBeat++;
+    }
+  }
+
+  console.log("--- Part Two ---");
+  console.log(
+    "How many ways can you beat the record in this one much longer race?"
+  );
+  console.log("Answer:");
+  console.log(amountOfTimesToBeat);
 }
 
 main();
