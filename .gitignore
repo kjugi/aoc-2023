@@ -148,3 +148,11 @@ dist
 
 # Go workspace file
 go.work
+
+# Custom
+index.js
+!day1/node/index.js
+!day2/node/index.js
+!day3/node/index.js
+!day4/node/index.js
+!day5/node/index.js

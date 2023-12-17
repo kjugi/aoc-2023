@@ -1,8 +1,7 @@
 {
   "name": "aoc-2023",
   "workspaces": [
-    "template/*",
-    "day6/node"
+    "template/*"
   ],
   "version": "1.0.0",
   "main": "index.js",
