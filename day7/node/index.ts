@@ -159,6 +159,49 @@ function main() {
   console.log("--- Part One ---");
   console.log("What are the total winnings?");
   console.log(totalWinnings);
+
+  // Part Two
+  const jokerCardStrengthMap: Record<string, number> = {
+    A: 13,
+    K: 12,
+    Q: 11,
+    T: 10,
+    "9": 9,
+    "8": 8,
+    "7": 7,
+    "6": 6,
+    "5": 5,
+    "4": 4,
+    "3": 3,
+    "2": 2,
+    J: 0,
+  };
+  const jokerCardKeys = Object.keys(cardStrengthMap);
+
+  // TODO: set the line loop to with defining handStrength - make a method from it to reuse
+  // TODO: at the end check for J card
+  // TODO: possible checks:
+  // - 5 J cards = explicit AAAAA
+  // - 4 J cards = get remaining card and take it's value to make it FIVE_OF_A_KIND
+  // - 3 J cards
+  //   - if got ONE_PAIR - take it's value to make it FIVE_OF_A_KIND
+  //   - if got nothing/two different - take higher value to make it FOUR_OF_A_KIND
+  // - 2 J cards
+  //   - if got FULL_HOUSE/THREE_OF_A_KIND - take it's value to make it FIVE_OF_A_KIND
+  //   - if got ONE_PAIR - take it's value to make it FOUR_OF_A_KIND
+  //   - if got nothing/three different - take highest card value to make it THREE_OF_A_KIND
+  // - 1 J card
+  //   - if got FOUR_OF_A_KIND - take it's value to make it FIVE_OF_A_KIND
+  //   - if got THREE_OF_A_KIND - take it's value to make it FOUR_OF_A_KIND
+  //   - if got TWO_PAIRS - take higher pair value to make it FULL_HOUSE
+  //   - if got ONE_PAIR - take highest card from ALL to make it FULL_HOUSE
+  //   - if got nothing - take highest card from ALL to make it ONE_PAIR
+  // - 0 J cards = return original handStrength
+
+  // TODO: repeat the sort, rank and totalWinnings
+
+  console.log("--- Part Two ---");
+  console.log("What are the new total winnings?");
 }
 
 main();
